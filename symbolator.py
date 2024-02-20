@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright © 2017 Kevin Thibedeau
 # Distributed under the terms of the MIT license
@@ -326,7 +326,7 @@ def make_section(sname, sect_pins, fill, extractor, no_type=False):
     # Check for pin name patterns
     pin_patterns = {
       'clock': re.compile(r'(^cl(oc)?k)|(cl(oc)?k$)', re.IGNORECASE),
-      'bubble': re.compile(r'_[nb]$', re.IGNORECASE),
+      'bubble': re.compile(r'(_[nb]$)|(rstn)', re.IGNORECASE),
       'bus': re.compile(r'(\[.*\]$)', re.IGNORECASE)
     }
 
