@@ -19,6 +19,20 @@ from hdlparse.vhdl_parser import VhdlComponent
 
 __version__ = '1.0.2'
 
+#font_name = 'Barlow Regular'
+#font_name = 'Helvetica'
+font_name = 'Consolas'
+font_size = 12
+font_type = 'bold'
+
+color_port_signal   = (10,10,10)
+color_port_name     = (0,0,0)
+color_port_outline  = (0,0,0)
+
+color_param_signal  = (0,0,0)
+color_param_name    = (0,0,0)
+color_param_outline = (100,100,100)
+color_param_bkgr    = (200,200,200)
 
 def xml_escape(txt):
   '''Replace special characters for XML strings'''
@@ -185,7 +199,7 @@ class PinSection(object):
 
     toff = 0
 
-    title_font = ('Helvetica', 12, 'bold')
+    title_font = (font_name, font_size, font_type)
     if self.show_name and self.name is not None and len(self.name) > 0: # Compute title offset
       x0,y0, x1,y1, baseline = c.surf.text_bbox(self.name, title_font)
       toff = y1 - y0
@@ -281,16 +295,16 @@ class HdlSymbol(object):
       if i==0 and self.libname:
         # Add libname
         c.create_text((bb[0]+bb[2])/2.0,bb[1] - self.symbol_spacing, anchor='cs',
-          text=self.libname, font=('Helvetica', 12, 'bold'))
+          text=self.libname, font=(font_name, font_size, font_type))
       elif i == 0 and self.component:
         # Add component name
         c.create_text((bb[0]+bb[2])/2.0,bb[1] - self.symbol_spacing, anchor='cs',
-          text=self.component, font=('Helvetica', 12, 'bold'))
+          text=self.component, font=(font_name, font_size, font_type))
 
       yoff += bb[3] - bb[1] + self.symbol_spacing
     if self.libname is not None:
         c.create_text((bb[0]+bb[2])/2.0,bb[3] + 2 * self.symbol_spacing, anchor='cs',
-          text=self.component, font=('Helvetica', 12, 'bold'))
+          text=self.component, font=(font_name, font_size, font_type))
 
 
 
@@ -354,11 +368,14 @@ def make_symbol(comp, extractor, title=False, libname="", no_type=False):
 
   color_seq = sinebow.distinct_color_sequence(0.6)
 
+  # *** module parameters ***
   if len(comp.generics) > 0: #'generic' in entity_data:
-    s = make_section(None, comp.generics, (200,200,200), extractor, no_type)
-    s.line_color = (100,100,100)
-    gsym = Symbol([s], line_color=(100,100,100))
+    s = make_section(None, comp.generics, color_param_bkgr, extractor, no_type) # bg color
+    s.line_color = (100,100,100) # thin outline color
+    gsym = Symbol([s], line_color=color_param_outline) # bold outline color
     vsym.add_symbol(gsym)
+
+  # *** module ports ***
   if len(comp.ports) > 0: #'port' in entity_data:
     psym = Symbol()
 
@@ -476,7 +493,9 @@ def main():
   args = parse_args()
 
   style = DrawStyle()
-  style.line_color = (0,0,0)
+  #style = DrawStyle(font=(font_name, font_size, font_type))
+
+  style.line_color = color_port_signal # outline color
 
   vhdl_ex = vhdl.VhdlExtractor()
   vlog_ex = vlog.VerilogExtractor()
@@ -490,7 +509,7 @@ def main():
     flist = []
     for lib in args.lib_dirs:
       print('Scanning library:', lib)
-      flist.extend(file_search(lib, extensions=('.vhdl', '.vhd', '.vlog', '.v'))) # Get VHDL and Verilog files
+      flist.extend(file_search(lib, extensions=('.vhdl', '.vhd', '.vlog', '.v', '.sv'))) # Get VHDL and Verilog files
     if args.input and os.path.isfile(args.input):
       flist.append(args.input)
 

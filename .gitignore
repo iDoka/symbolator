@@ -1,5 +1,6 @@
 build
 dist
 *.pyc
+*.svg
 doc/_build
 symbolator.egg-info
