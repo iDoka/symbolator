@@ -185,7 +185,7 @@ class PinSection(object):
 
     toff = 0
 
-    title_font = ('Times', 12, 'italic')
+    title_font = ('Helvetica', 12, 'bold')
     if self.show_name and self.name is not None and len(self.name) > 0: # Compute title offset
       x0,y0, x1,y1, baseline = c.surf.text_bbox(self.name, title_font)
       toff = y1 - y0
